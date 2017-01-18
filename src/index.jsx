@@ -30,23 +30,10 @@ import {
 
 import { UserAuthWrapper } from 'redux-auth-wrapper'
 
-import App from './modules/AppViewContainer';
-//import Login from '../containers/Login';
-//import Register from '../containers/Register';
-//import Logout from '../containers/Logout';
+import App from './modules/App';
 
-
-import Home from './modules/Home/HomeViewContainer';
-import Lectures from './modules/Lectures/LectureViewContainer';
-import LectureDetails from './modules/LectureDetails/LectureDetailsViewContainer';
-import Experts from './modules/Experts/ExpertViewContainer';
-import ExpertDetails from './modules/ExpertDetails/ExpertDetailsViewContainer';
-import Teachers from './modules/Teachers/TeacherViewContainer';
-import TeacherDetails from './modules/TeacherDetails/TeacherDetailsViewContainer';
-
-import Register from './modules/RegisterExpert/RegisterExpertViewContainer';
-
-import Preferences from './modules/Preferences';
+import Login from './modules/Auth/Login';
+import routes from './utils/routes';
 
 import configureStore from './redux/store';
 
@@ -55,7 +42,7 @@ injectTapEventPlugin();
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import theme from './material_ui_raw_theme_file';
+import theme from './utils/theme';
 const muiTheme = getMuiTheme(theme);
 
 //Needed for React Developer Tools
@@ -63,15 +50,11 @@ window.React = React;
 
 const store = configureStore();
 
-// react-router-redux interop with redux-immutablejs
-const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState (state) {
-    return state.get('routing').toObject();
-  }
-});
+const history = syncHistoryWithStore(browserHistory, store);
 
 const requireAuthentication = UserAuthWrapper({
   authSelector: state => state.auth.data,
+  predicate: authData => authData.token,
   redirectAction: routerActions.replace,
   wrapperDisplayName: 'requireAuthentication'
 })
@@ -85,17 +68,15 @@ ReactDOM.render(
         messages={messages}
       >
         <Router history={history}>
-          <Route path='/' component={App}>
-            <IndexRoute component={Home}/>
-            <Redirect from='/home' to='/' />
-            <Route path='/lectures' component={Lectures}/>
-            <Route path='/lectures/:id' component={LectureDetails}/>
-            <Route path='/experts' component={Experts}/>
-            <Route path='/experts/:id' component={ExpertDetails}/>
-            <Route path='/teachers' component={Teachers}/>
-            <Route path='/teachers/:id' component={TeacherDetails}/>
-            <Route path='/preferences' component={Preferences}/>
-            <Route path='/register' component={Register}/>
+          <Route path='/login' component={Login}/>
+          <Route path='/' component={requireAuthentication(App)}>
+            <IndexRoute component={routes[0].component}/>
+            <Redirect from={routes[0].path} to='/' />
+            {
+              routes.map((route, index) => (
+                <Route key={index} path={route.path} component={route.component} />
+              ))
+            }
           </Route>
           <Redirect from='*' to='/' />
         </Router>

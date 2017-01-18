@@ -1,12 +1,11 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+
 import HomeView from './HomeView';
 import rest from '../../services/rest';
 
 export default connect(
-  state => ({
-    experts: state.getIn(['rest', 'experts']).toJS()
-  }),
-  dispatch => ({
+  (state) => ({}),
+  (dispatch) => ({
     getExperts() {
       dispatch(rest.actions.experts());
     }

@@ -1,3 +1,3 @@
 export default {
-  API_ROOT: 'https://superada.herokuapp.com'
+  API_ROOT: 'https://myapp.herokuapp.com'
 };

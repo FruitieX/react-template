@@ -1,4 +1,3 @@
-import { Map } from 'immutable';
 import {
   createAction,
   createReducer
@@ -10,13 +9,22 @@ export const openDrawer = createAction('Open menu drawer');
 export const toggleDrawer = createAction('Toggle menu drawer');
 
 // Initial state
-const initialState = Map({
+const initialState = {
   drawerOpened: false
-});
+};
 
 // Reducer
 export default createReducer({
-  [closeDrawer]: (state) => state.set('drawerOpened', false),
-  [openDrawer]: (state) => state.set('drawerOpened', true),
-  [toggleDrawer]: (state) => state.set('drawerOpened', !state.get('drawerOpened'))
+  [closeDrawer]: (state) => ({
+    ...state,
+    drawerOpened: false
+  }),
+  [openDrawer]: (state) => ({
+    ...state,
+    drawerOpened: true
+  }),
+  [toggleDrawer]: (state) => ({
+    ...state,
+    drawerOpened: !state.drawerOpened
+  })
 }, initialState);

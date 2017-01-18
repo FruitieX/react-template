@@ -1,44 +1,10 @@
 import React from 'react';
-import { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-//import rest from '../reducers/api';
+import { Component } from 'react';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import MenuDrawer from './MenuDrawer/MenuDrawerViewContainer';
-import Header from './Header/HeaderViewContainer';
-
-// 1 hour
-const jwtRefreshInterval = 1000 * 60 * 60;
+import MenuDrawer from './MenuDrawer';
+import Header from './Header';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.jwtTimer = null;
-  }
-
-  componentDidMount() {
-    /*
-    this.jwtTimer = setInterval(_ => {
-      console.log('renewing auth token');
-      this.props.dispatch(rest.actions.renewAuth());
-    }, jwtRefreshInterval);
-
-    console.log('renewing auth token');
-    this.props.dispatch(rest.actions.renewAuth());
-    */
-  }
-
-  componentWillUnmount() {
-    if (this.jwtTimer) {
-      clearInterval(this.jwtTimer);
-    }
-
-    this.jwtTimer = null;
-  }
-
   render() {
     return(
       <div>
@@ -50,11 +16,4 @@ class App extends Component {
   }
 }
 
-function select(state, ownProps) {
-  return {
-    location: ownProps.location,
-    params: ownProps.params
-  };
-}
-
-export default connect(select)(App);
+export default App;

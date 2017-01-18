@@ -1,45 +1,35 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import React, { PropTypes, Component } from 'react';
-import { AppBar, Drawer, MenuItem } from 'material-ui';
-import * as MenuDrawerState from '../MenuDrawer/MenuDrawerState';
-import { MenuRoutes, MiscRoutes } from '../../utils/routes';
+import { Component } from 'react';
+import { AppBar } from 'material-ui';
 import { FormattedMessage } from 'react-intl';
 
-const defaultStyle = {
-  marginLeft: 20
-};
+import routes from '../../utils/routes';
 
 class Header extends Component {
-  toggleDrawer() {
-    this.props.dispatch(MenuDrawerState.toggleDrawer());
-  }
-
-  matchMiscRoute(path, params) {
-    return MiscRoutes[Object.keys(MiscRoutes).find(route => {
-      let replacedRoute = route;
-
-      if (route.indexOf(':' !== -1)) {
-        Object.keys(params).forEach(param => {
-          replacedRoute = replacedRoute.replace(`:${param}`, params[param]);
-        });
-      }
-
-      if (replacedRoute === path) {
-        return true;
-      }
-    })];
-  }
-
   getTitle(path, params) {
-    return MenuRoutes[path] || this.matchMiscRoute(path, params);
+    if (path === '/') {
+      return routes[0].name;
+    }
+
+    return routes.find((route) => {
+      if (route.path === path) {
+        return route.name;
+      }
+    }).name;
   }
 
   render() {
+    let title = this.getTitle(this.props.pathname, this.props.params);
+
+    if (!title) {
+      title = 'ERROR: Title not found';
+      console.warn(`No title found for path '${this.props.pathname}'`);
+      console.warn('Make sure the title name is defined in src/routes.js');
+    }
+
     return (
-      <header className="header">
-        <AppBar title={<FormattedMessage id={this.getTitle(this.props.pathname, this.props.params)} /> }
-                onLeftIconButtonTouchTap={() => this.toggleDrawer()}/>
+      <header>
+        <AppBar title={<FormattedMessage id={title} /> }
+                onLeftIconButtonTouchTap={() => this.props.toggleDrawer()}/>
       </header>
     );
   }
